@@ -4,19 +4,19 @@
     <div class="top">
       <div class="info">
         <h2>{{ user.name }}</h2>
-        <p>@{{ user.login }}</p>
+        <p>@{{ user.login }}{{ user.company ? " / " + user.company : "" }}</p>
       </div>
       <div class="widget">
-        <p class="title">Repositories</p>
-        <span class="count">{{ repos }}</span>
+        <p class="title">Public Repositories</p>
+        <span class="count">{{ user.public_repos }}</span>
       </div>
       <div class="widget">
-        <p class="title">Follower</p>
-        <span class="count">{{ followers }}</span>
+        <p class="title">Total Follower</p>
+        <span class="count">{{ user.followers }}</span>
       </div>
       <div class="widget">
-        <p class="title">Following</p>
-        <span class="count">{{ following }}</span>
+        <p class="title">Total Following</p>
+        <span class="count">{{ user.following }}</span>
       </div>
     </div>
   </div>
@@ -25,25 +25,26 @@
 <script>
 export default {
   name: 'usercard',
-  props: [ 'user' ],
+  props: {
+    user: Object,
+    clientID: String,
+    clientSecret: String
+  },
   data: () => ({
-    followers: '0',
-    following: '0',
-    repos: '0',
   }),
   beforeUpdate() {
-    this.getCount("followers", this.user.followers_url)
-    this.getCount("following", this.user.following_url)
-    this.getCount("repos", this.user.repos_url)
+    // this.getCount("followers", this.user.followers_url)
+    // this.getCount("following", this.user.following_url)
+    // this.getCount("repos", this.user.repos_url)
   },
   beforeMount() {
-    this.getCount("followers", this.user.followers_url)
-    this.getCount("following", this.user.following_url)
-    this.getCount("repos", this.user.repos_url)
+    // this.getCount("followers", this.user.followers_url)
+    // this.getCount("following", this.user.following_url)
+    // this.getCount("repos", this.user.repos_url)
   },
   methods: {
     getCount(type, url) {
-      this.$http.get(url)
+      this.$http.get(url + "?client_id=" + clientID + "&client_secret="  + clientSecret)
       .then((res) => {
         const result = res.body
         // console.log("HTTP CALL ", result)
@@ -73,7 +74,7 @@ export default {
 
 <style lang="stylus" scoped>
 .usercard
-  margin 0 auto
+  margin 50px auto
   padding 20px
   display flex
   width 600px
@@ -100,9 +101,15 @@ img
       display block
       margin 0
       text-align left
+      max-height 30px
+      overflow hidden
+      text-overflow ellipsis
+    h2
+      font-size 20px
   .widget
     margin auto 10px
     padding 0
+    width 60px
     align right
     p
       text-transform uppercase
