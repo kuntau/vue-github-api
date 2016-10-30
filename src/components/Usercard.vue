@@ -6,14 +6,40 @@
       <div class="info">
         <h2>{{ user.name }}</h2>
         <p>@{{ user.login }}{{ user.company ? " / " + user.company : "" }}</p>
+    <div class="row_first">
+      <a :href="user.html_url" target="_blank">
+        <img :src="user.avatar_url" :alt="user.name" />
+      </a>
+      <div class="top">
+        <div class="name">
+          <a @click="getCount('user_view', null)" class="cursor">
+            <h2>{{ user.name }}</h2>
+          </a>
+          <p>@{{ user.login }} <small>/{{ user.type }}</small></p>
+        </div>
+        <div class="widget">
+          <a @click="getCount('repos_view', user.repos_url)" class="cursor">
+            <p class="title">Public Repositories</p>
+            <span class="count">{{ user.public_repos }}</span>
+          </a>
+        </div>
+        <div class="widget">
+          <p class="title">Total Follower</p>
+          <span class="count">{{ user.followers }}</span>
+        </div>
+        <div class="widget">
+          <p class="title">Total Following</p>
+          <span class="count">{{ user.following }}</span>
+        </div>
       </div>
-      <div class="widget">
-        <p class="title">Public Repositories</p>
-        <span class="count">{{ user.public_repos }}</span>
-      </div>
-      <div class="widget">
-        <p class="title">Total Follower</p>
-        <span class="count">{{ user.followers }}</span>
+    </div>
+    <div class="row_third">
+      <div class="name" v-if="current_view === 'user_view'">
+        <p v-if="user.email"><strong>E-Mail</strong> {{ user.email }}</p>
+        <p v-if="user.company"><strong>Company</strong> {{ user.company }}</p>
+        <p v-if="user.blog"><strong>Blog</strong> {{ user.blog }}</p>
+        <p v-if="user.location"><strong>Location</strong> {{ user.location }}</p>
+        <p v-if="user.bio"><strong>Biodata</strong> {{ user.bio }}</p>
       </div>
       <div class="widget">
         <p class="title">Total Following</p>
