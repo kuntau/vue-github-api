@@ -1,4 +1,5 @@
 <template lang="html">
+<template>
   <div class="usercard">
     <img :src="user.avatar_url" :alt="user.name" />
     <div class="top">
