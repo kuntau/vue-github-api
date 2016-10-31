@@ -36,9 +36,10 @@
         <p v-if="user.bio"><strong>Biodata</strong> {{ user.bio }}</p>
       </div>
       <div class="repos" v-if="current_view === 'repos_view'">
-        <div class="repos_list">
-          <ul v-if="cache.repos.length > 0">
-            <li v-for="(repo, index) in cache.repos">
+        <div v-if="cache.repos.length > 0" class="repos_list">
+          <input type="text" v-model="repos_filter" />
+          <ul>
+            <li v-for="(repo, index) in filteredRepos">
               <a @click="reposMore(index)" class="cursor">
                 {{ repo.name }}
               </a>
@@ -46,11 +47,17 @@
           </ul>
         </div>
         <div v-if="cache.repos_more_view" class="repos_more">
+          <h4>Repositories Details :</h4>
+          <p>
+          {{ filteredRepos.name }}
+          </p>
           <ul>
-            <li><strong>Repositories Details :</strong> {{ cache.repos_index }}</li>
+            <!-- <li>{{ cache.repos_index }} {{ filteredRepos.repos[cache.repos_index].name }}</li>  -->
             <li><b>Star</b> {{ cache.repos[cache.repos_index].stargazers_count }}</li>
-            <li><b>Watcher</b> {{ cache.repos[cache.repos_index].watchers_count }}</li>
             <li><b>Fork</b> {{ cache.repos[cache.repos_index].forks_count }}</li>
+            <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork }}</li>
+            <li><b>Language</b> {{ cache.repos[cache.repos_index].language }}</li>
+            <li><a :href="cache.repos[cache.repos_index].html_url" target="_blank">Open in Github</a></li>
           </ul>
         </div>
       </div>
@@ -68,6 +75,7 @@ export default {
   },
   data: () => ({
     current_view: "user_view",
+    repos_filter: '',
     last_call: {
       repos: {},
       followers: {},
@@ -82,6 +90,13 @@ export default {
       following: {},
     },
   }),
+  computed: {
+    filteredRepos() {
+      return this.cache.repos.filter(repo => {
+        return (repo.name.toLowerCase().indexOf(this.repos_filter.toLowerCase()) === -1 ? false : true)
+      })
+    }
+  },
   methods: {
     getCount(type, url) {
       this.current_view = type
@@ -129,14 +144,6 @@ export default {
         this.cache.repos_more_view = !this.cache.repos_more_view
       }
     },
-    reposMoreOld(repo) {
-      if (this.cache.repos_more !== repo) {
-        this.cache.repos_more_view = true
-        this.cache.repos_more = repo
-      } else {
-        this.cache.repos_more_view = !this.cache.repos_more_view
-      }
-    }
   }
 }
 </script>
@@ -217,8 +224,10 @@ export default {
       margin-left auto
       border 1px #333 solid
       height 33%
+      h4
+        padding 20px
+        margin 0
       ul
-        padding 0 20px
         li
           list-style none
 .cursor
