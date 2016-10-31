@@ -40,7 +40,7 @@
           <input type="text" v-model="repos_filter" />
           <ul>
             <li v-for="(repo, index) in filteredRepos">
-              <a @click="reposMore(index)" class="cursor">
+              <a @click="reposMore(repo.id)" class="cursor">
                 {{ repo.name }}
               </a>
             </li>
@@ -85,6 +85,7 @@ export default {
       repos: {},
       repos_more: {},
       repos_index: 0,
+      repos_id: 0,
       repos_more_view: false,
       followers: {},
       following: {},
@@ -136,10 +137,11 @@ export default {
         // this.text = error.status
       })
     },
-    reposMore(i) {
-      if (this.cache.repos_index !== i) {
+    reposMore(id) {
+      if (this.cache.repos_id !== id) {
         this.cache.repos_more_view = true
-        this.cache.repos_index = i
+        this.cache.repos_id = id
+        this.cache.repos_index = this.cache.repos.findIndex(repo => repo.id === id)
       } else {
         this.cache.repos_more_view = !this.cache.repos_more_view
       }
@@ -220,6 +222,8 @@ export default {
       padding-left 20px
       li
         list-style square
+        a:active
+          color lime
     .repos_more
       margin-left auto
       border 1px #333 solid
