@@ -53,11 +53,11 @@
           </p>
           <ul>
             <!-- <li>{{ cache.repos_index }} {{ filteredRepos.repos[cache.repos_index].name }}</li>  -->
+            <li><a :href="cache.repos[cache.repos_index].html_url" target="_blank">{{ cache.repos[cache.repos_index].name }}</a></li>
             <li><b>Star</b> {{ cache.repos[cache.repos_index].stargazers_count }}</li>
             <li><b>Fork</b> {{ cache.repos[cache.repos_index].forks_count }}</li>
             <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork }}</li>
             <li><b>Language</b> {{ cache.repos[cache.repos_index].language }}</li>
-            <li><a :href="cache.repos[cache.repos_index].html_url" target="_blank">Open in Github</a></li>
           </ul>
         </div>
       </div>
@@ -205,7 +205,6 @@ export default {
   display flex
   margin-left 90px
   padding-bottom 20px
-  border-bottom 1px solid #999
   .name
     margin auto 0
     padding 0
@@ -222,14 +221,12 @@ export default {
       padding-left 20px
       li
         list-style square
-        a:active
-          color lime
     .repos_more
       margin-left auto
       border 1px #333 solid
-      height 33%
+      align-self flex-start
       h4
-        padding 20px
+        padding 20px 20px 0 20px
         margin 0
       ul
         li
@@ -238,4 +235,6 @@ export default {
   cursor pointer
   &:hover
     color #66bb6a
+  &:active
+    color #66cc6a
 </style>
