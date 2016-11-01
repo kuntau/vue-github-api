@@ -1,12 +1,12 @@
-# vue-playground
+# vue-github-api
 
-> A Vue.js project
+> A Vue.js test project
 
 ## Build Setup
 
-``` bash
+``` zsh
 # install dependencies
-npm install
+yarn
 
 # serve with hot reload at localhost:8080
 npm run dev
