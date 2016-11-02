@@ -1,24 +1,14 @@
 <template>
   <div id="app">
-    <h2>Essential Links</h2>
-    <ul>
-      <li v-for="essential in essentials">
-        <a v-bind:href="essential.name" target="_blank">{{ essential.name }}</a>
-      </li>
-    </ul>
-    <ul>
-      <li v-for="essential in reduced">
-        <a v-bind:href="essential.name" target="_blank">{{ essential.name }}</a>
-      </li>
-    </ul>
-    <hr />
-    <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter username">
+    <h1>Github User Card</h1>
+    <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github username">
     <button @click="getdata(username)">{{ text }}</button>
     <button type="button" v-if="on" @click="toggleRaw">{{ rawLabel }} Raw Data</button><br />
     <code v-if="on && rawBool">
+      <hr />
       <span v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br /></span>
+      <hr />
     </code>
-    <hr />
     <Usercard :user="user" :clientID="clientID" :clientSecret="clientSecret" v-if="user.login"></Usercard>
   </div>
 </template>
@@ -37,16 +27,6 @@ export default {
       text: 'Promise?',
       username: '',
       on: false,
-      essentials: [
-        { name: 'Core Docs', url: 'https://vuejs.org' },
-        { name: 'Forum', url: 'https://forum.vuejs.org' },
-        { name: 'Gitter Chat', url: 'https://gitter.im/vuejs/vue' },
-        { name: 'Twiiter', url: 'https://twitter.com/vuejs' },
-        { url: 'http://router.vuejs.org/', name: 'vue-router' },
-        { url: 'http://vuex.vuejs.org/', name: 'vuex' },
-        { url: 'http://vue-loader.vuejs.org/', name: 'vue-loader' },
-        { url: 'https://github.com/vuejs/awesome-vue', name: 'awesome-vue' }
-      ],
       user: {},
       rawLabel: 'Show',
       rawBool: false,
@@ -94,6 +74,7 @@ html
   margin 0
   padding 0
   background #787B83
+  color #f9f9f9
 </style>
 
 <style lang="stylus" scoped>
@@ -103,12 +84,12 @@ html
   -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
-  padding 20px 50px 0 50px
+  padding 50px
   height 100vh
-  /*background-color #f9f9f9*/
 
 h1, h2
   font-weight normal
+  color #f9f9f9
 
 ul
   list-style-type none
