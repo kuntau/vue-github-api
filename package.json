@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --inline --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "start": "PORT=80 node server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.14.0",
