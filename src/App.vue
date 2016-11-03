@@ -174,5 +174,6 @@ input
   border 1px #eaeaea solid
   border-radius 5px
   line-height 20px
+  padding 2px 10px
 
 </style>
