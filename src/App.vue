@@ -1,14 +1,19 @@
 <template>
   <div id="app">
     <h1>{{ msg }}</h1>
-    <small v-if="rate_limit.core">Core API: {{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }} until {{ coreTimeReset }}</small><br />
-    <small v-if="rate_limit.search">Search API: {{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }} until {{ searchTimeReset }}</small><br />
-    <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github username">
+    <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github name, separate multiple name with comma." autofocus=true /><br />
     <button @click="getdata(username)">{{ text }}</button>
     <button type="button" v-if="on" @click="toggleRaw">{{ rawLabel }} DUMP</button><br />
+    <small v-if="rate_limit.core">Core API usage is <u>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</u> and will reset <u>{{ coreTimeReset }}</u></small><br />
+    <small v-if="rate_limit.search">Search API usage is <u>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</u> and will reset <u>{{ searchTimeReset }}</u></small><br />
     <code v-if="on && rawBool" class="json">
       <ul>
-        <li v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br /></li>
+        <li v-for="user in users" v-if="users">
+          <ul>
+            <li v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br />
+            </li>
+          </ul>
+        </li>
       </ul>
     </code>
     <!-- <Usercard v-for="id in idx" :user="getdata(id)" v-if="user.login"></Usercard> -->
@@ -18,6 +23,7 @@
 
 <script>
 import Usercard from './components/Usercard.vue'
+import moment from 'moment'
 
 export default {
   name: 'app',
@@ -27,7 +33,7 @@ export default {
   data () {
     return {
       msg: 'Github User Card',
-      text: 'Promise?',
+      text: 'Search User',
       username: '',
       on: false,
       users: [],
@@ -46,10 +52,10 @@ export default {
       return this.username.split(',')
     },
     coreTimeReset () {
-      return (new Date(this.rate_limit.core.reset*1000).toLocaleTimeString())
+      return (moment(this.rate_limit.core.reset*1000).fromNow())
     },
     searchTimeReset () {
-      return (new Date(this.rate_limit.search.reset*1000).toLocaleTimeString())
+      return (moment(this.rate_limit.search.reset*1000).fromNow())
     }
   },
   methods: {
@@ -116,7 +122,7 @@ export default {
     }
   },
   mounted() {
-    document.getElementById('searchbox').focus()
+    // document.getElementById('searchbox').focus()
     this.getRateLimit()
   },
 }
@@ -160,6 +166,13 @@ a
   color #42b983
 
 small
+  color rgba(0,0,0,.7)
   font-size 10px
+
+input
+  width 500px
+  border 1px #eaeaea solid
+  border-radius 5px
+  line-height 20px
 
 </style>
