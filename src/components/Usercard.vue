@@ -2,28 +2,34 @@
   <div class="usercard">
     <div class="row_first">
       <a :href="user.html_url" target="_blank">
-        <img :src="user.avatar_url" :alt="user.name" />
+        <img :src="user.avatar_url" :alt="user.name" :title="user.id" />
       </a>
       <div class="top">
         <div class="name">
           <a @click="getCount('user_view', null)" class="cursor">
             <h2>{{ user.name }}</h2>
           </a>
-          <p>@{{ user.login }} <small>/{{ user.type }}</small></p>
+          <p>@{{ user.login }} <small>/{{ user.type }} #{{ user.id }}</small></p>
         </div>
         <div class="widget">
           <a @click="getCount('repos_view', user.repos_url)" class="cursor">
             <p class="title">Public Repositories</p>
-            <span class="count">{{ user.public_repos }}</span>
+            <span class="count">{{ formatNumber(user.public_repos) }}</span>
+          </a>
+        </div>
+        <div class="widget">
+          <a @click="getCount('repos_view', user.repos_url)" class="cursor">
+            <p class="title">Public<br />Gists</p>
+            <span class="count">{{ formatNumber(user.public_gists) }}</span>
           </a>
         </div>
         <div class="widget">
           <p class="title">Total Follower</p>
-          <span class="count">{{ user.followers }}</span>
+          <span class="count">{{ formatNumber(user.followers) }}</span>
         </div>
         <div class="widget">
           <p class="title">Total Following</p>
-          <span class="count">{{ user.following }}</span>
+          <span class="count">{{ formatNumber(user.following) }}</span>
         </div>
       </div>
     </div>
@@ -34,10 +40,11 @@
         <p v-if="user.blog"><strong>Blog</strong> {{ user.blog }}</p>
         <p v-if="user.location"><strong>Location</strong> {{ user.location }}</p>
         <p v-if="user.bio"><strong>Biodata</strong> {{ user.bio }}</p>
+        <p><strong>Member since</strong> {{ new Date(user.created_at).toLocaleDateString() }}</p>
       </div>
       <div class="repos" v-if="current_view === 'repos_view'">
         <div v-if="cache.repos.length > 0" class="repos_list">
-          <input type="text" v-model="repos_filter" />
+          <input type="text" v-model="repos_filter" placeholder="filter repos" />
           <ul>
             <li v-for="(repo, index) in filteredRepos">
               <a @click="reposMore(repo.id)" class="cursor">
@@ -45,19 +52,31 @@
               </a>
             </li>
           </ul>
+          <p>{{ totalReposPage }}</p>
+          <button v-if="cache.repos.length < user.public_repos" @click="loadMoreRepos()">Load more</button>
         </div>
         <div v-if="cache.repos_more_view" class="repos_more">
-          <h4>Repositories Details :</h4>
+          <h4>Repositories Details:</h4>
           <p>
           {{ filteredRepos.name }}
           </p>
           <ul>
             <!-- <li>{{ cache.repos_index }} {{ filteredRepos.repos[cache.repos_index].name }}</li>  -->
-            <li><a :href="cache.repos[cache.repos_index].html_url" target="_blank">{{ cache.repos[cache.repos_index].name }}</a></li>
-            <li><b>Star</b> {{ cache.repos[cache.repos_index].stargazers_count }}</li>
+            <li><a :href="cache.repos[cache.repos_index].html_url" :title="cache.repos[cache.repos_index].id" target="_blank">{{ cache.repos[cache.repos_index].name }}</a></li>
+            <li v-if="cache.repos[cache.repos_index].homepage"><b>Homepage</b> {{ cache.repos[cache.repos_index].homepage }}</li>
+            <li><b>&#9733;</b> {{ cache.repos[cache.repos_index].stargazers_count }}</li>
             <li><b>Fork</b> {{ cache.repos[cache.repos_index].forks_count }}</li>
-            <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork }}</li>
+            <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork ? 'Yes' : 'No' }}</li>
             <li><b>Language</b> {{ cache.repos[cache.repos_index].language }}</li>
+            <li><b>Size</b> {{ cache.repos[cache.repos_index].size }} Files</li>
+            <li><b>Has Issues</b> {{ cache.repos[cache.repos_index].has_issues ? 'Yes' : 'No' }}</li>
+            <li><b>Has Downloads</b> {{ cache.repos[cache.repos_index].has_downloads ? 'Yes' : 'No' }}</li>
+            <li><b>Has Wiki</b> {{ cache.repos[cache.repos_index].has_wiki ? 'Yes' : 'No' }}</li>
+            <li><b>Has Pages</b> {{ cache.repos[cache.repos_index].has_pages ? 'Yes' : 'No' }}</li>
+            <li><b>Default Branch</b> {{ cache.repos[cache.repos_index].default_branch }}</li>
+            <li><b>Created at</b> {{ new Date(cache.repos[cache.repos_index].created_at).toLocaleDateString() }}</li>
+            <li><b>Updated at</b> {{ new Date(cache.repos[cache.repos_index].updated_at).toLocaleDateString() }}</li>
+            <li><b>Pushed at</b> {{ new Date(cache.repos[cache.repos_index].pushed_at).toLocaleDateString() }}</li>
           </ul>
         </div>
       </div>
@@ -66,6 +85,7 @@
 </template>
 
 <script>
+const ITEM_PER_PAGE = 30
 export default {
   name: 'usercard',
   props: {
@@ -96,7 +116,12 @@ export default {
       return this.cache.repos.filter(repo => {
         return (repo.name.toLowerCase().indexOf(this.repos_filter.toLowerCase()) === -1 ? false : true)
       })
-    }
+    },
+    totalReposPage() {
+      // return this.user.public_repos
+      // return (Math.round(this.user.public_repos / ITEM_PER_PAGE) + (this.user.public_repos%ITEM_PER_PAGE > 0 ? 1 : 0))
+      return 'Showing ' + this.cache.repos.length + ' of ' + this.user.public_repos + ' repos'
+    },
   },
   methods: {
     getCount(type, url) {
@@ -146,6 +171,26 @@ export default {
         this.cache.repos_more_view = !this.cache.repos_more_view
       }
     },
+    loadMoreRepos() {
+
+    },
+    formatNumber (num, digits = 1) {
+      let si = [
+        { value: 1E18, symbol: "E" },
+        { value: 1E15, symbol: "P" },
+        { value: 1E12, symbol: "T" },
+        { value: 1E9,  symbol: "G" },
+        { value: 1E6,  symbol: "M" },
+        { value: 1E3,  symbol: "k" },
+        { value: 1E0,  symbol: ""  }
+      ], rx = /\.0+$|(\.[0-9]*[1-9])0+$/, i;
+      for (let i = 0; i < si.length; i++) {
+        if (num >= si[i].value) {
+          return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+        }
+      }
+      return num.toFixed(digits).replace(rx, "$1");
+    }
   }
 }
 </script>
@@ -192,7 +237,7 @@ export default {
     .widget
       margin auto 10px
       padding 0
-      width 60px
+      width 50px
       align right
       p
         text-transform uppercase
@@ -217,20 +262,24 @@ export default {
     text-align left
     display flex
     width 100%
-    ul
-      padding-left 20px
-      li
-        list-style square
+    .repos_list
+      ul
+        padding-left 20px
+        li
+          list-style square
     .repos_more
       margin-left auto
       border 1px #333 solid
       align-self flex-start
+      max-width 50%
       h4
         padding 20px 20px 0 20px
         margin 0
       ul
+        padding-left 20px
         li
           list-style none
+          overflow hidden
 .cursor
   cursor pointer
   &:hover
