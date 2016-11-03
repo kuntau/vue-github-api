@@ -52,7 +52,7 @@
               </a>
             </li>
           </ul>
-          <p>{{ totalReposPage }}</p>
+          <p>Showing {{ filteredRepos.length }} of {{ totalReposPage }} repos</p>
           <button v-if="cache.repos.length < user.public_repos" @click="loadMoreRepos()">Load more</button>
         </div>
         <div v-if="cache.repos_more_view" class="repos_more">
@@ -120,7 +120,7 @@ export default {
     totalReposPage() {
       // return this.user.public_repos
       // return (Math.round(this.user.public_repos / ITEM_PER_PAGE) + (this.user.public_repos%ITEM_PER_PAGE > 0 ? 1 : 0))
-      return 'Showing ' + this.cache.repos.length + ' of ' + this.user.public_repos + ' repos'
+      return this.user.public_repos
     },
   },
   methods: {
