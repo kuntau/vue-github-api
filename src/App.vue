@@ -1,15 +1,18 @@
 <template>
   <div id="app">
-    <h1>Github User Card</h1>
+    <h1>{{ msg }}</h1>
+    <small v-if="rate_limit.core">Core API: {{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }} until {{ coreTimeReset }}</small><br />
+    <small v-if="rate_limit.search">Search API: {{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }} until {{ searchTimeReset }}</small><br />
     <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github username">
     <button @click="getdata(username)">{{ text }}</button>
-    <button type="button" v-if="on" @click="toggleRaw">{{ rawLabel }} Raw Data</button><br />
-    <code v-if="on && rawBool">
-      <hr />
-      <span v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br /></span>
-      <hr />
+    <button type="button" v-if="on" @click="toggleRaw">{{ rawLabel }} DUMP</button><br />
+    <code v-if="on && rawBool" class="json">
+      <ul>
+        <li v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br /></li>
+      </ul>
     </code>
-    <Usercard :user="user" :clientID="clientID" :clientSecret="clientSecret" v-if="user.login"></Usercard>
+    <!-- <Usercard v-for="id in idx" :user="getdata(id)" v-if="user.login"></Usercard> -->
+    <Usercard v-for="user in users" :user=user  v-if="user.login"></Usercard>
   </div>
 </template>
 
@@ -23,13 +26,14 @@ export default {
   },
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      msg: 'Github User Card',
       text: 'Promise?',
       username: '',
       on: false,
-      user: {},
+      users: [],
       rawLabel: 'Show',
       rawBool: false,
+      rate_limit: {},
       clientID: "fake",
       clientSecret: "fake"
     }
@@ -37,6 +41,15 @@ export default {
   computed: {
     reduced () {
       return this.essentials.filter(e => e.name.match('vue'))
+    },
+    idx () {
+      return this.username.split(',')
+    },
+    coreTimeReset () {
+      return (new Date(this.rate_limit.core.reset*1000).toLocaleTimeString())
+    },
+    searchTimeReset () {
+      return (new Date(this.rate_limit.search.reset*1000).toLocaleTimeString())
     }
   },
   methods: {
@@ -44,7 +57,11 @@ export default {
       this.rawBool = !this.rawBool
       this.rawLabel = this.rawBool === true ? "Hide" : "Show"
     },
-    getdata(id) {
+    ids () {
+      return this.username.split(',')
+    },
+    getdatas(id) {
+      this.getRateLimit()
       this.$http.get('https://api.github.com/users/' + id + "?client_id=" + this.clientID + "&client_secret="  + this.clientSecret)
       .then((response) => {
         this.text = response.status
@@ -53,7 +70,7 @@ export default {
       .then((res) => {
         const result = res.body
         // console.log(result)
-        this.user = result
+        this.users.push(result)
         this.on = true
         return result
       })
@@ -61,11 +78,47 @@ export default {
         // console.log("Catch", error)
         this.text = error.status
       })
+    },
+    getdata(login) {
+      // console.log(this.$options.computed.idx())
+      this.users = []
+      const ids = this.ids()
+      ids.forEach(id => {
+        this.$http.get('https://api.github.com/users/' + id + "?client_id=" + this.clientID + "&client_secret="  + this.clientSecret)
+        .then((response) => {
+          this.text = response.status
+          return response
+        })
+        .then((res) => {
+          const result = res.body
+          // console.log(result)
+          this.users.push(result)
+          this.on = true
+          return result
+        })
+        .catch((error) => {
+          // console.log("Catch", error)
+          this.text = error.status
+        })
+      })
+      this.getRateLimit()
+    },
+    getRateLimit() {
+      this.$http.get('https://api.github.com/rate_limit')
+        .then(res  => {
+          this.rate_limit = res.body.resources
+          console.log("calling getRateLimit")
+          return res
+        })
+        .catch(err =>  {
+          console.log(err)
+        })
     }
   },
   mounted() {
     document.getElementById('searchbox').focus()
-  }
+    this.getRateLimit()
+  },
 }
 </script>
 
@@ -93,13 +146,20 @@ h1, h2
 
 ul
   list-style-type none
-  padding 0
-
-li
-  display inline-block
-  margin 0 10px
+  padding 10px
+  margin 10px 10%
+  font-family 'Menlo', monospace
+  font-size 12px
+  border 1px #eaeaea solid
+  border-radius 5px
+  background-color #eaeaea
+  li
+    margin 5px
 
 a
   color #42b983
+
+small
+  font-size 10px
 
 </style>
