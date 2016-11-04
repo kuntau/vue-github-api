@@ -17,7 +17,7 @@
       </ul>
     </code>
     <!-- <Usercard v-for="id in idx" :user="getdata(id)" v-if="user.login"></Usercard> -->
-    <ul>
+    <ul class="listcard">
       <li v-for="user in users">
         <Usercard :user=user  v-if="user.login"></Usercard>
       </li>
@@ -174,6 +174,11 @@ ul
     li
       margin 5px
 
+.listcard > li
+  &:nth-child(1)
+    margin-top 50px
+  &:last-child
+    margin-bottom 50px
 a
   color #42b983
 

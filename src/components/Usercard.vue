@@ -198,7 +198,7 @@ export default {
 
 <style lang="stylus" scoped>
 .usercard
-  margin 50px auto
+  margin 0 auto
   padding 20px
   display inline-flex
   flex-direction column
