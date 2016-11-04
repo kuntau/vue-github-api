@@ -27,3 +27,22 @@ npm run build
 ```
 
 For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+### Learning Milestone
+
+1. [x] Get a user from github
+2. [x] Display the user info
+  - Store data in user object
+  - Display user info in nice card
+3. [x] Call another API from user object _public repos_
+  - Store _repos_ data in cache
+  - Check cache when switching between views to prevent redundant API call
+  - Made a Vue.js compoenent; `Usercard`
+  - Learned `computed, methods`
+  - Learned Vue.js life cycle; `beforeCreate, beforeMount, mounted, afterMount, etc...`
+4. [ ] Call remaining callable API _public gists, followers, following_
+5. [x] Get multiple user from a single input
+  - User object now stored in users array
+6. [x] Output users in multiple cards
+  - Dynamic card style base on how many cards
+7. [ ] Animate list of Usercards on enter after search
