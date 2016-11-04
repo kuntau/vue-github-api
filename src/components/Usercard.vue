@@ -64,18 +64,17 @@
             <!-- <li>{{ cache.repos_index }} {{ filteredRepos.repos[cache.repos_index].name }}</li>  -->
             <li><a :href="cache.repos[cache.repos_index].html_url" :title="cache.repos[cache.repos_index].id" target="_blank">{{ cache.repos[cache.repos_index].name }}</a></li>
             <li v-if="cache.repos[cache.repos_index].homepage"><b>Homepage</b> {{ cache.repos[cache.repos_index].homepage }}</li>
-            <li><b>&#9733;</b> {{ cache.repos[cache.repos_index].stargazers_count }}</li>
+            <li><b>Stars</b> &#9733; {{ cache.repos[cache.repos_index].stargazers_count }}</li>
             <li><b>Fork</b> {{ cache.repos[cache.repos_index].forks_count }}</li>
             <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork ? 'Yes' : 'No' }}</li>
             <li><b>Language</b> {{ cache.repos[cache.repos_index].language }}</li>
-            <li><b>Size</b> {{ cache.repos[cache.repos_index].size }} Files</li>
+            <li><b>Size</b> {{ formatNumber(cache.repos[cache.repos_index].size) }} Files</li>
             <li><b>Has Issues</b> {{ cache.repos[cache.repos_index].has_issues ? 'Yes' : 'No' }}</li>
             <li><b>Has Downloads</b> {{ cache.repos[cache.repos_index].has_downloads ? 'Yes' : 'No' }}</li>
             <li><b>Has Wiki</b> {{ cache.repos[cache.repos_index].has_wiki ? 'Yes' : 'No' }}</li>
             <li><b>Has Pages</b> {{ cache.repos[cache.repos_index].has_pages ? 'Yes' : 'No' }}</li>
             <li><b>Default Branch</b> {{ cache.repos[cache.repos_index].default_branch }}</li>
             <li><b>Created at</b> {{ new Date(cache.repos[cache.repos_index].created_at).toLocaleDateString() }}</li>
-            <li><b>Updated at</b> {{ new Date(cache.repos[cache.repos_index].updated_at).toLocaleDateString() }}</li>
             <li><b>Pushed at</b> {{ new Date(cache.repos[cache.repos_index].pushed_at).toLocaleDateString() }}</li>
           </ul>
         </div>
@@ -106,6 +105,7 @@ export default {
       repos_more: {},
       repos_index: 0,
       repos_id: 0,
+      repos_page: 1,
       repos_more_view: false,
       followers: {},
       following: {},
@@ -114,7 +114,8 @@ export default {
   computed: {
     filteredRepos() {
       return this.cache.repos.filter(repo => {
-        return (repo.name.toLowerCase().indexOf(this.repos_filter.toLowerCase()) === -1 ? false : true)
+        // using this nasty NOT operator below read: https://www.joezimjs.com/javascript/great-mystery-of-the-tilde/
+        return (~repo.name.toLowerCase().indexOf(this.repos_filter.toLowerCase()) ? true : false)
       })
     },
     totalReposPage() {
@@ -235,10 +236,11 @@ export default {
         text-transform uppercase
         font-size 8px
     .widget
-      margin auto 10px
+      margin auto 2px
       padding 0
-      width 50px
-      align right
+      width 55px
+      self-align right
+      text-align center
       p
         text-transform uppercase
         font-size 8px
@@ -269,6 +271,7 @@ export default {
           list-style square
     .repos_more
       margin-left auto
+      padding 0 10px 20px 0
       border 1px #333 solid
       align-self flex-start
       max-width 50%
