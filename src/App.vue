@@ -2,11 +2,11 @@
   <div id="app">
     <h1>{{ msg }}</h1>
     <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github name, separate multiple name with comma." autofocus=true /><br />
-    <button @click="getdata(username)">{{ text }}</button>
-    <button type="button" v-if="on" @click="toggleRaw">{{ rawLabel }} DUMP</button><br />
+    <button @click="getdata(username)" class="pure-button pure-button-primary">{{ text }}</button>
+    <button type="button" v-if="on" @click="toggleRaw" class="pure-button">{{ rawLabel }} DUMP</button><br />
     <small v-if="rate_limit.core">Core API usage is <u>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</u> and will reset <u>{{ coreTimeReset }}</u></small><br />
     <small v-if="rate_limit.search">Search API usage is <u>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</u> and will reset <u>{{ searchTimeReset }}</u></small><br />
-    <code v-if="on && rawBool" class="json">
+    <code v-if="on && rawBool" class="raw">
       <ul>
         <li v-for="user in users" v-if="users">
           <ul>
@@ -17,7 +17,11 @@
       </ul>
     </code>
     <!-- <Usercard v-for="id in idx" :user="getdata(id)" v-if="user.login"></Usercard> -->
-    <Usercard v-for="user in users" :user=user  v-if="user.login"></Usercard>
+    <ul>
+      <li v-for="user in users">
+        <Usercard :user=user  v-if="user.login"></Usercard>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -154,13 +158,21 @@ ul
   list-style-type none
   padding 10px
   margin 10px 10%
-  font-family 'Menlo', monospace
-  font-size 12px
-  border 1px #eaeaea solid
-  border-radius 5px
-  background-color #eaeaea
   li
     margin 5px
+
+.raw
+  ul
+    list-style-type none
+    padding 10px
+    margin 10px 10%
+    font-family 'Menlo', monospace
+    font-size 12px
+    border 1px #eaeaea solid
+    border-radius 5px
+    background-color #eaeaea
+    li
+      margin 5px
 
 a
   color #42b983
@@ -175,5 +187,6 @@ input
   border-radius 5px
   line-height 20px
   padding 2px 10px
+  margin 15px
 
 </style>
