@@ -46,3 +46,5 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 6. [x] Output users in multiple cards
   - Dynamic card style base on how many cards
 7. [ ] Animate list of Usercards on enter after search
+8. [ ] Learn vue-router
+9. [ ] Learn vuex
