@@ -1,0 +1,7 @@
+language: noe_js
+node_js:
+  - "7"
+
+install:
+  npm install
+  npm run build
