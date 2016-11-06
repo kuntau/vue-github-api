@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <h1>{{ msg }}</h1>
+    <h1 @click="getdata(username = 'tj,wycats,creationix,addyosmani,paulirish')">{{ msg }}</h1>
     <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github name, separate multiple name with comma." autofocus=true /><br />
     <button @click="getdata(username)" class="mui-btn mui-btn--primary">{{ text }}</button>
     <button type="button" v-if="on" @click="toggleRaw" class="mui-btn mui-btn--accent">{{ rawLabel }} DUMP</button><br />
-    <small v-if="rate_limit.core">Core API usage is <b>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</b> and will reset <b>{{ coreTimeReset }}</b></small><br />
-    <small v-if="rate_limit.search">Search API usage is <b>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</b> and will reset <b>{{ searchTimeReset }}</b></small><br />
+    <small v-if="rate_limit.core" @click="getRateLimit()">Core API usage is <b>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</b> and will reset <b>{{ coreTimeReset }}</b></small><br />
+    <small v-if="rate_limit.search" @click="getRateLimit()">Search API usage is <b>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</b> and will reset <b>{{ searchTimeReset }}</b></small><br />
     <transition name="fade">
       <code v-if="on && rawBool" class="raw">
         <ul>
@@ -120,10 +120,10 @@ export default {
         .then(res  => {
           this.rate_limit = res.body.resources
           console.log("calling getRateLimit")
-          return res
+          return res.body
         })
         .catch(err =>  {
-          console.log(err)
+          console.error(err)
         })
     }
   },
@@ -148,7 +148,7 @@ body
 #app
   text-align center
   color #2c3e50
-  padding 50px
+  padding-top 50px
   height 100vh
 
 h1, h2
@@ -158,7 +158,7 @@ h1, h2
 ul
   list-style-type none
   padding 10px
-  margin 10px 10%
+  margin 0 auto
   li
     margin 5px
 

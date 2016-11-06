@@ -51,5 +51,9 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - [x] Animate list of Usercards on hover
 - [ ] Animate list of Usercards on enter after search
 - [x] Highlight class `@click` as active for `v-for`
+- [ ] Add `sort` for Usercard by `id` `login` `followers` etc...
+- [ ] Sort feature for repos list
+- [ ] Load more repos as default API request is limited to `30` repos per page
+  - [ ] Bonus point if I can make option for infinite scrolling
 - [ ] Learn vue-router
 - [ ] Learn vuex
