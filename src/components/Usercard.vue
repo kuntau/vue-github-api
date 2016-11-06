@@ -1,5 +1,5 @@
 <template>
-  <div class="usercard">
+  <div class="usercard mui--z5">
     <div class="row_first">
       <a :href="user.html_url" target="_blank">
         <img :src="user.avatar_url" :alt="user.name" :title="user.id" />
@@ -7,7 +7,7 @@
       <div class="top">
         <div class="name">
           <a @click="getCount('user_view', null)" class="cursor">
-            <h2>{{ user.name }}</h2>
+            <h2>{{ user.name || 'Unknown' }}</h2>
           </a>
           <p>@{{ user.login }} <small>/{{ user.type }} #{{ user.id }}</small></p>
         </div>
@@ -44,26 +44,28 @@
       </div>
       <div class="repos" v-if="current_view === 'repos_view'">
         <div v-if="cache.repos.length > 0" class="repos_list">
-          <input type="text" v-model="repos_filter" placeholder="filter repos" />
+          <input id="repos-filter" type="text" v-model="repos_filter" placeholder="filter repos" />
           <ul>
-            <li v-for="(repo, index) in filteredRepos">
-              <a @click="reposMore(repo.id)" class="cursor">
+            <li v-for="(repo, index) in filteredRepos" :key="repo.id">
+              <a @click="reposMore(repo.id)" class="cursor" :class="{ active: repo.id === cache.repos_id && cache.repos_more_view }">
                 {{ repo.name }}
               </a>
             </li>
           </ul>
           <p>Showing {{ filteredRepos.length }} of {{ totalReposPage }} repos</p>
-          <button v-if="cache.repos.length < user.public_repos" @click="loadMoreRepos()">Load more</button>
+          <button v-if="cache.repos.length < user.public_repos" @click="loadMoreRepos()" class="mui-btn light">Load more</button>
         </div>
         <div v-if="cache.repos_more_view" class="repos_more">
           <h4>Repositories Details:</h4>
           <p>
           {{ filteredRepos.name }}
           </p>
-          <ul>
-            <!-- <li>{{ cache.repos_index }} {{ filteredRepos.repos[cache.repos_index].name }}</li>  -->
-            <li><a :href="cache.repos[cache.repos_index].html_url" :title="cache.repos[cache.repos_index].id" target="_blank">{{ cache.repos[cache.repos_index].name }}</a></li>
-            <li v-if="cache.repos[cache.repos_index].homepage"><b>Homepage</b> {{ cache.repos[cache.repos_index].homepage }}</li>
+          <ul class="mui-list--unstyled">
+            <li>
+              <a :href="cache.repos[cache.repos_index].html_url" :title="cache.repos[cache.repos_index].id" target="_blank">Github Page</a>
+              <span v-if="cache.repos[cache.repos_index].homepage">|</span>
+              <a :href="cache.repos[cache.repos_index].homepage" v-if="cache.repos[cache.repos_index].homepage" target="_blank">Home Page</a>
+            </li>
             <li><b>Stars</b> &#9733; {{ cache.repos[cache.repos_index].stargazers_count }}</li>
             <li><b>Fork</b> {{ cache.repos[cache.repos_index].forks_count }}</li>
             <li><b>A Fork</b> {{ cache.repos[cache.repos_index].fork ? 'Yes' : 'No' }}</li>
@@ -94,6 +96,7 @@ export default {
   },
   data: () => ({
     current_view: "user_view",
+    isActive: false,
     repos_filter: '',
     last_call: {
       repos: {},
@@ -205,10 +208,10 @@ export default {
   width 600px
   background-color white
   border-radius 2px
-  box-shadow 1px 1px 10px rgba(0,0,0,.1), 10px 10px 50px rgba(0,0,0,.2), 20px 20px 100px rgba(0,0,0,.3)
+  /* box-shadow 1px 1px 10px rgba(0,0,0,.1), 10px 10px 50px rgba(0,0,0,.2), 20px 20px 100px rgba(0,0,0,.3) */
   color #333
   &:hover
-    transform perspective(1000px) scale3d(1.03, 1.03, 1.03) rotateX(-5deg)
+    transform scale3d(1.02, 1.02, 1.02)
     transition all 0.2s ease-in-out
 
 .row_first
@@ -243,7 +246,7 @@ export default {
       margin auto 2px
       padding 0
       width 55px
-      self-align right
+      align-self right
       text-align center
       p
         text-transform uppercase
@@ -268,6 +271,10 @@ export default {
     text-align left
     display flex
     width 100%
+    input
+      margin-bottom 10px
+      padding 0 10px
+      width 200px
     .repos_list
       ul
         padding-left 20px
@@ -287,10 +294,19 @@ export default {
         li
           list-style none
           overflow hidden
+
 .cursor
   cursor pointer
   &:hover
-    color #66bb6a
-  &:active
-    color #66cc6a
-</style>
+    color #1976d2
+    text-decoration none
+
+.active
+  /* color #66cc6a */
+  color #1976d2
+  font-weight bold
+
+.mui-btn.light
+  color #fff
+  background-color #bbdefb
+  </style>

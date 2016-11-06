@@ -30,21 +30,26 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 
 ### Learning Milestone
 
-1. [x] Get a user from github
-2. [x] Display the user info
-  - Store data in user object
-  - Display user info in nice card
-3. [x] Call another API from user object _public repos_
-  - Store _repos_ data in cache
-  - Check cache when switching between views to prevent redundant API call
-  - Made a Vue.js compoenent; `Usercard`
-  - Learned `computed, methods`
-  - Learned Vue.js life cycle; `beforeCreate, beforeMount, mounted, afterMount, etc...`
-4. [ ] Call remaining callable API _public gists, followers, following_
-5. [x] Get multiple user from a single input
+- [x] Get a user from github
+- [x] Display the user info
+  - [x] Store data in user object
+  - [x] Display user info in nice card
+- [x] Call another API from user object _public repos_
+  - [x] Store _repos_ data in cache
+  - [x] Check cache when switching between views to prevent redundant API call
+  - [x] Made a Vue.js compoenent; `Usercard`
+  - [x] Learned `computed, methods`
+  - [x] Learned Vue.js life cycle; `beforeCreate, beforeMount, mounted, afterMount, etc...`
+- [ ] Call remaining callable API _public gists, followers, following_
+  - [ ] Call and process _gists_
+  - [ ] Call and process _followers_
+  - [ ] Call and process _following_
+- [x] Get multiple user from a single input
   - User object now stored in users array
-6. [x] Output users in multiple cards
-  - Dynamic card style base on how many cards
-7. [ ] Animate list of Usercards on enter after search
-8. [ ] Learn vue-router
-9. [ ] Learn vuex
+- [x] Output users in multiple cards
+  - [x] Dynamic card style base on how many cards.  _just using `nth-child` conditioning_
+- [x] Animate list of Usercards on hover
+- [ ] Animate list of Usercards on enter after search
+- [x] Highlight class `@click` as active for `v-for`
+- [ ] Learn vue-router
+- [ ] Learn vuex

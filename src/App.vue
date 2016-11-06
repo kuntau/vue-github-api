@@ -2,20 +2,22 @@
   <div id="app">
     <h1>{{ msg }}</h1>
     <input id="searchbox" type="text" @keyup.enter="getdata(username)" v-model="username" placeholder="enter github name, separate multiple name with comma." autofocus=true /><br />
-    <button @click="getdata(username)" class="pure-button pure-button-primary">{{ text }}</button>
-    <button type="button" v-if="on" @click="toggleRaw" class="pure-button">{{ rawLabel }} DUMP</button><br />
-    <small v-if="rate_limit.core">Core API usage is <u>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</u> and will reset <u>{{ coreTimeReset }}</u></small><br />
-    <small v-if="rate_limit.search">Search API usage is <u>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</u> and will reset <u>{{ searchTimeReset }}</u></small><br />
-    <code v-if="on && rawBool" class="raw">
-      <ul>
-        <li v-for="user in users" v-if="users">
-          <ul>
-            <li v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br />
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </code>
+    <button @click="getdata(username)" class="mui-btn mui-btn--primary">{{ text }}</button>
+    <button type="button" v-if="on" @click="toggleRaw" class="mui-btn mui-btn--accent">{{ rawLabel }} DUMP</button><br />
+    <small v-if="rate_limit.core">Core API usage is <b>{{ rate_limit.core.remaining }}/{{ rate_limit.core.limit }}</b> and will reset <b>{{ coreTimeReset }}</b></small><br />
+    <small v-if="rate_limit.search">Search API usage is <b>{{ rate_limit.search.remaining }}/{{ rate_limit.search.limit }}</b> and will reset <b>{{ searchTimeReset }}</b></small><br />
+    <transition name="fade">
+      <code v-if="on && rawBool" class="raw">
+        <ul>
+          <li v-for="user in users" v-if="users">
+            <ul>
+              <li v-for="(value, key) in user" v-if="value">{{ key }}: {{ value ? value : 'null' }}<br />
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </code>
+    </transition>
     <!-- <Usercard v-for="id in idx" :user="getdata(id)" v-if="user.login"></Usercard> -->
     <ul class="listcard">
       <li v-for="user in users">
@@ -133,18 +135,17 @@ export default {
 </script>
 
 <style lang="stylus">
-html
-  margin 0
-  padding 0
-  background #787B83
-  color #f9f9f9
+body
+  background-color #f9f9f9
+  background-color #1976b2
+  font-family 'Open Sans', Helvetica, Arial, sans-serif
+  -webkit-font-smoothing subpixel-antialiased
+  -webkit-font-smoothing antialiased
+  -moz-osx-font-smoothing grayscale
 </style>
 
 <style lang="stylus" scoped>
 #app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
   text-align center
   color #2c3e50
   padding 50px
@@ -152,7 +153,7 @@ html
 
 h1, h2
   font-weight normal
-  color #f9f9f9
+  color rgab(0,0,0,.87)
 
 ul
   list-style-type none
@@ -193,5 +194,13 @@ input
   line-height 20px
   padding 2px 10px
   margin 15px
+
+.fade-enter-active
+  transition all .3s ease
+.fade-leave-active
+  transition all .2s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+.fade-enter
+.fade-leave-active
+  opacity 0
 
 </style>
