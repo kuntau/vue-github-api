@@ -2,6 +2,10 @@
 
 > A Vue.js test project
 
+## Screenshot
+
+![Vue Github API](/vue-github-api.png?raw=true)
+
 ## Retiring vue-resource
 
 As Vue users, many of you may have used _vue-resource_ for handling ajax requests in your Vue applications. For a long time it’s been thought of as the “official” ajax library for Vue, but today we are retiring it from official recommendation status.
