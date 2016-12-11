@@ -44,7 +44,9 @@
       </div>
       <div class="repos" v-if="current_view === 'repos_view'">
         <div v-if="cache.repos.length > 0" class="repos_list">
-          <input id="repos-filter" type="text" v-model="repos_filter" placeholder="filter repos" />
+          <div class="mui-textfield">
+            <input id="repos-filter" type="text" v-model="repos_filter" placeholder="filter repos" />
+          </div>
           <ul>
             <li v-for="(repo, index) in filteredRepos" :key="repo.id">
               <a @click="reposMore(repo.id)" class="cursor" :class="{ active: repo.id === cache.repos_id && cache.repos_more_view }">
